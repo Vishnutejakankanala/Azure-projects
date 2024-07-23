@@ -1,1 +1,1 @@
-# Json Templates are used to create azure resources
+# Azure projects and theory part
