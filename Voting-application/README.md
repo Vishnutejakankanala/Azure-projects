@@ -51,6 +51,64 @@ Do Changes in yaml file and run job.
 Hence, CI part is Completed.
 
 
+# CD Implimentation using AZure Pipeline - ArgoCD
+Create Kubernetes service in Azure Portal. 
+```
+Create -> create k8s cluster -> Resource group
+Cluster present config [DEV/Test] -> k8s cluster name [azuredevops]
+Region [south india]
+Node Pool -> click on [agent pool] -> minimum node -> count [1] -> maximum count [2] -> max pods per node [30]
+Enble public ip [/] -> update -> [/] agent pool -> review&Create -> Create.
+```
+
+workflow of CICD Pipeline
+```
+CI {REpo -> Build[Docker Image] -> Push[ACR] -> Update[Repo(k8s-manifests)]}  CD {Gitops[k8s-manifests / ArgoCD] -> K8S[azure k8s cluster]}
+```
+
+Login to the k8s cluster
+```
+az aks get-credentials --name azuredevops --overwrite-existing --resource-group azurecicd (To configure in CMD)
+kubectl get pods (to get pods)
+kubectl get nodes ( to get nodes)
+```
+
+Install ArgoCD Using CMD, refer argoCD doc
+```
+Qick start (execute commands)
+kubectl get pods (to get pods)
+```
+
+Configure ArgoCD
+```
+kubectl get secrets -n argocd
+kubectl edit secrets <argocd-initial-admin.secrets -n argocd>
+To get password : <copy it = >
+echo <password> | base64 --decode (you will get argocd password)
+kubectl get svc -n argocd ( To get services)
+kubectl edit svc argocd-sever -n argocd ( To edit type Cluster ip to Node port)
+kubectl get nodes -o wide (To show all details)
+copy External ip and http port <Ip address:portno>
+To allow acess to webside goto azure portal.
+search -> VMSS -> Click on agentpool -> instance -> aks agent pool -> Network settings -> Create port rules -> inbound port rule.
+wait for some time and try again argoCD will open.
+```
+
+Login To argoCD and Connect to azure devops
+```
+
+
+```
+
+
+
+
+
+
+
+
+
+
 
 
 
