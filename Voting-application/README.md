@@ -96,21 +96,65 @@ wait for some time and try again argoCD will open.
 
 Login To argoCD and Connect to azure devops
 ```
-
-
+User name <admin> and password <argocd-admin-secrets>
+Go to azure devops and crete Personal Acess Token.
+In argocd -> settings -> Repositories -> connect repo -> Choose your connection via HTTPS -> connect repo [git] ->
+project [default] -> repo url [clone in devops repo].
+in url replace <organization name with PAT no -> Connect.
 ```
 
+Create application in argoCD 
+```
+Application -> Create[+] -> app name[voteapp-server]
+project name [default] -> sync policy [AAutomatic]
+source <repo url> -> path [k8s-specification]
+destination -> Cluster url [https://kubernetes.default.svc]
+Name space [default] -> Create. 
+```
 
+Add Update stage in azure Pipeline
+```
+Go to azure repo add folder -> Scripts. create file [update-k8s-manifests.sh]
+update-k8s-manifests.sh script copy from GitHub
+Go to pipeline add new or edit azure-pipeline-vote.yaml by addind update stage
+save and run the script. It will run Stage, Build and Update.
+make sure agent is online (VM). [./run.sh].
+```
 
+Command to Create ACR Image Pull Secrets
+```
+kubectl create secret docker-registry <secret-name> \
+    --namespace <namespace> \
+    --docker-server=<container-registry-name>.azurecr.io \
+    --docker-username=<service-principal-ID> \
+    --docker-password=<service-principal-password>
 
+<secret-name> - acr-secreate   {in Secret acrsecreate will create}
+<namespace> - default
+<container-registry-name> - vishnucicd
+<service-principal-ID> -> In ACR -> settings -> Accesskey -> [/]admin user -> you will get user name and password 
+<service-principal-password>
+```
 
+In Azure Devops 
+```
+k8s-specifications/vote-deployment.yaml -> add image pool secrets.
+image pull secrets:
+-name: acr-secrets
 
+vote/app.py (change cats vs dogs) commit it
+```
 
+To reach Vote app in Web-server
+```
+kubectl get svc (To get vote port no 31000)
+kubectl get node -o wide (To get External ip address)
+To allow acess to webside goto azure portal.
+search -> VMSS -> Click on agentpool -> instance -> aks agent pool -> Network settings
+-> Create port rules -> inbound port rule -> 31000 and save
+Go to new tab <ipaddress:port no> to reach to voting application
 
+Same way go to result and do the same thing, you will get result
+```
 
-
-
-
-
-
-
+Refer to https://youtu.be/aAjH9wqtx9o?si=rwJrmFJs37PSM4yl and https://youtu.be/HyTIsLZWkZg?si=s5-mI4-Jcl84dQhZ 
