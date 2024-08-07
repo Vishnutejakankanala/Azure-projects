@@ -1,6 +1,6 @@
 # CI Implimentation project using Azure Devops
 Open Azure Devops and Create a project to get started project name [voting-app]
-Go to repos and import a resistor, a import. clone URL< https://github.com/Vishnutejakankanala/Azure-projects/Voting-app>
+Go to repos and import a resistory, import. clone URL< https://github.com/Vishnutejakankanala/Azure-projects/Voting-app>
 go to branches, set to main as a default branch. 
 
 Create a pipeline
